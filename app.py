@@ -70,6 +70,16 @@ CREATE TABLE IF NOT EXISTS notifications (
 )
 ''')
 
+    # Additional columns for advanced discussion features
+    try:
+        conn.execute("ALTER TABLE comments ADD COLUMN best_answer TEXT DEFAULT 'No'")
+    except:
+        pass
+    try:
+        conn.execute("ALTER TABLE comments ADD COLUMN parent_id INTEGER DEFAULT 0")
+    except:
+        pass
+    conn.commit()
     conn.close()
 
 
@@ -427,6 +437,50 @@ def profile(username):
         helpful_count=helpful_count,
         username=username
     )
+
+
+# EDIT COMMENT
+@app.route('/edit_comment/<int:comment_id>/<username>', methods=['POST'])
+def edit_comment(comment_id, username):
+    new_text = request.form['edited_comment']
+    conn = get_db()
+    conn.execute("UPDATE comments SET comment=? WHERE id=? AND username=?",
+                 (new_text, comment_id, username))
+    conn.commit()
+    conn.close()
+    return redirect(f'/index/{username}')
+
+
+# MARK BEST ANSWER
+@app.route('/best_answer/<int:comment_id>/<int:post_id>/<username>')
+def best_answer(comment_id, post_id, username):
+    conn = get_db()
+    conn.execute("UPDATE comments SET best_answer='No' WHERE post_id=?", (post_id,))
+    conn.execute("UPDATE comments SET best_answer='Yes' WHERE id=?", (comment_id,))
+    conn.execute("UPDATE posts SET solved='Yes' WHERE id=?", (post_id,))
+    answer = conn.execute("SELECT username FROM comments WHERE id=?", (comment_id,)).fetchone()
+    if answer:
+        conn.execute(
+            "INSERT INTO notifications (username, message, is_read) VALUES (?, ?, 0)",
+            (answer['username'], "🏆 Your answer was marked as Best Answer!")
+        )
+    conn.commit()
+    conn.close()
+    return redirect(f'/index/{username}')
+
+
+# REPLY TO AN ANSWER
+@app.route('/reply/<int:comment_id>/<int:post_id>/<username>', methods=['POST'])
+def reply(comment_id, post_id, username):
+    text = request.form['reply_text']
+    conn = get_db()
+    conn.execute(
+        "INSERT INTO comments (post_id, username, comment, image, best_answer, parent_id) VALUES (?, ?, ?, '', 'No', ?)",
+        (post_id, username, text, comment_id)
+    )
+    conn.commit()
+    conn.close()
+    return redirect(f'/index/{username}')
 
 # RUN
 if __name__ == '__main__':

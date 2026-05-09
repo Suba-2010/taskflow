@@ -1016,3 +1016,17 @@ button:hover::after {
         font-size: 15px;
     }
 }
+.best-answer-badge {
+    background: linear-gradient(90deg, #ffd700, #ffb300);
+    color: #333;
+    padding: 6px 12px;
+    border-radius: 20px;
+    display: inline-block;
+    font-weight: bold;
+    margin: 8px 0;
+}
+
+.reply-box {
+    margin-left: 30px;
+    margin-top: 10px;
+}

@@ -278,6 +278,9 @@
 
                             <span>
                                 💬 <b>{{c[2]}}</b>: {{c[3]}}
+                                {% if c[5] is defined and c[5] == 'Yes' %}
+                                    <span class="best-answer-badge">🏆 Best Answer</span>
+                                {% endif %}
                             </span>
 
                             <a 
@@ -287,6 +290,12 @@
                                 🗑
 
                             </a>
+
+                            {% if post[1] == username %}
+                            <a href="/best_answer/{{c[0]}}/{{post[0]}}/{{username}}" class="solve-btn">
+                                🏆 Best
+                            </a>
+                            {% endif %}
 
                         </div>
 
@@ -298,6 +307,18 @@
                             class="answer-image">
 
                         {% endif %}
+
+                        {% if c[2] == username %}
+                        <form action="/edit_comment/{{c[0]}}/{{username}}" method="POST" class="reply-box">
+                            <input type="text" name="edited_comment" placeholder="Edit your answer">
+                            <button type="submit">✏️ Edit</button>
+                        </form>
+                        {% endif %}
+
+                        <form action="/reply/{{c[0]}}/{{post[0]}}/{{username}}" method="POST" class="reply-box">
+                            <input type="text" name="reply_text" placeholder="Reply to this answer...">
+                            <button type="submit">💬 Reply</button>
+                        </form>
 
                     </div>
 
