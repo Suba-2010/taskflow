@@ -283,36 +283,45 @@ def delete(post_id, username):
 # COMMENT
 @app.route('/comment/<int:post_id>/<username>', methods=['POST'])
 def comment(post_id, username):
+    text = request.form['comment']
+    image = request.files.get('image')
+    filename = ""
 
-    comment = request.form['comment']
+    # Save answer image if uploaded
+    if image and image.filename != "":
+        from werkzeug.utils import secure_filename
+        import os
 
-    file = request.files['answer_image']
-
-    filename = ''
-
-    if file and file.filename != '':
-
-        filename = secure_filename(file.filename)
-
-        file.save(
-            os.path.join(
-                app.config['UPLOAD_FOLDER'],
-                filename
-            )
-        )
+        filename = secure_filename(image.filename)
+        image.save(os.path.join('static/uploads', filename))
 
     conn = get_db()
 
+    # Insert comment/answer
     conn.execute(
         "INSERT INTO comments (post_id, username, comment, image) VALUES (?, ?, ?, ?)",
-        (post_id, username, comment, filename)
+        (post_id, username, text, filename)
     )
+
+    # Get post owner
+    post = conn.execute(
+        "SELECT username FROM posts WHERE id = ?",
+        (post_id,)
+    ).fetchone()
+
+    # Create notification for the post owner
+    if post and post[0] != username:   # Don't notify yourself
+        message = f"{username} answered your post 💡"
+
+        conn.execute(
+            "INSERT INTO notifications (username, message, is_read) VALUES (?, ?, 0)",
+            (post[0], message)
+        )
 
     conn.commit()
     conn.close()
 
     return redirect(f'/index/{username}')
-
 
 # DELETE COMMENT
 @app.route('/delete_comment/<int:comment_id>/<username>')
@@ -367,26 +376,28 @@ def save(post_id, username):
 def notifications(username):
     conn = get_db()
 
-    notes = conn.execute(
-        "SELECT * FROM notifications WHERE username=? ORDER BY id DESC",
+    notifications = conn.execute(
+        "SELECT * FROM notifications WHERE username = ? ORDER BY id DESC",
         (username,)
     ).fetchall()
 
-    # Mark all as read
+    # Mark as read
     conn.execute(
-        "UPDATE notifications SET is_read=1 WHERE username=?",
+        "UPDATE notifications SET is_read = 1 WHERE username = ?",
         (username,)
     )
+
     conn.commit()
     conn.close()
 
     return render_template(
         'notifications.html',
-        notifications=notes,
+        notifications=notifications,
         username=username
     )
 @app.route('/profile/<username>')
 def profile(username):
+    
     conn = get_db()
 
     user = conn.execute(
