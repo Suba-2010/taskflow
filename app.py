@@ -280,39 +280,34 @@ def delete(post_id, username):
 
     return redirect(f'/index/{username}')
 
-# COMMENT
 @app.route('/comment/<int:post_id>/<username>', methods=['POST'])
 def comment(post_id, username):
     text = request.form['comment']
-    image = request.files.get('image')
+    image = request.files.get('answer_image')   # ✅ Correct field name
     filename = ""
 
-    # Save answer image if uploaded
+    # Save uploaded answer image
     if image and image.filename != "":
-        from werkzeug.utils import secure_filename
-        import os
-
         filename = secure_filename(image.filename)
-        image.save(os.path.join('static/uploads', filename))
+        image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
     conn = get_db()
 
-    # Insert comment/answer
+    # Insert comment and image filename
     conn.execute(
         "INSERT INTO comments (post_id, username, comment, image) VALUES (?, ?, ?, ?)",
         (post_id, username, text, filename)
     )
 
-    # Get post owner
+    # Get original post owner
     post = conn.execute(
         "SELECT username FROM posts WHERE id = ?",
         (post_id,)
     ).fetchone()
 
-    # Create notification for the post owner
-    if post and post[0] != username:   # Don't notify yourself
+    # Send notification to post owner
+    if post and post[0] != username:
         message = f"{username} answered your post 💡"
-
         conn.execute(
             "INSERT INTO notifications (username, message, is_read) VALUES (?, ?, 0)",
             (post[0], message)
@@ -322,7 +317,6 @@ def comment(post_id, username):
     conn.close()
 
     return redirect(f'/index/{username}')
-
 # DELETE COMMENT
 @app.route('/delete_comment/<int:comment_id>/<username>')
 def delete_comment(comment_id, username):
@@ -397,7 +391,7 @@ def notifications(username):
     )
 @app.route('/profile/<username>')
 def profile(username):
-    
+
     conn = get_db()
 
     user = conn.execute(
