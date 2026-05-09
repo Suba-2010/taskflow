@@ -1,0 +1,93 @@
+<!-- profile.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ username }} | CampusHub Profile</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<!-- Top Navbar -->
+<div class="navbar">
+    <h1>CampusHub 🌟</h1>
+</div>
+
+<!-- Profile Section -->
+<div class="profile-page">
+
+    <div class="profile-card-modern">
+
+        <!-- Cover Banner -->
+        <div class="profile-cover"></div>
+
+        <!-- Profile Content -->
+        <div class="profile-content">
+
+            <!-- Profile Image -->
+            {% if user[3] %}
+                <img
+                    src="/static/uploads/{{ user[3] }}"
+                    class="profile-large"
+                    alt="Profile Picture">
+            {% else %}
+                <div class="profile-placeholder">👤</div>
+            {% endif %}
+
+            <!-- Username -->
+            <h2 class="profile-name">{{ username }}</h2>
+
+            <p class="profile-subtitle">
+                🎓 CampusHub Member
+            </p>
+
+            <!-- Stats -->
+            <div class="profile-stats">
+
+                <div class="stat-box">
+                    <h3>{{ posts_count }}</h3>
+                    <p>Posts</p>
+                </div>
+
+                <div class="stat-box">
+                    <h3>{{ answers_count }}</h3>
+                    <p>Answers</p>
+                </div>
+
+                <div class="stat-box">
+                    <h3>{{ helpful_count }}</h3>
+                    <p>Helpful Votes</p>
+                </div>
+
+            </div>
+
+            <!-- Achievement Badges -->
+            <div class="profile-badges">
+
+                {% if posts_count >= 1 %}
+                    <span class="badge">📝 Contributor</span>
+                {% endif %}
+
+                {% if answers_count >= 1 %}
+                    <span class="badge">💡 Helper</span>
+                {% endif %}
+
+                {% if helpful_count >= 5 %}
+                    <span class="badge">🏆 Top Mentor</span>
+                {% endif %}
+
+            </div>
+
+            <!-- Back Button -->
+            <a href="/index/{{ username }}" class="profile-back-btn">
+                ⬅ Back to Home
+            </a>
+
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

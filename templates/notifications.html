@@ -1,0 +1,65 @@
+<!-- notifications.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications | CampusHub</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="navbar">
+    <h1>CampusHub 🌟</h1>
+</div>
+
+<!-- Notifications Page -->
+<div class="notifications-page">
+
+    <div class="notifications-card">
+
+        <!-- Header -->
+        <div class="notifications-header">
+            <div class="notification-icon">🔔</div>
+            <div>
+                <h2>Notifications</h2>
+                <p>Stay updated with all your recent activities</p>
+            </div>
+        </div>
+
+        <!-- Notifications List -->
+        {% if notifications %}
+            <div class="notifications-list">
+
+                {% for n in notifications %}
+                <div class="notification-item">
+                    <div class="notification-dot"></div>
+                    <div class="notification-content">
+                        {{ n[2] }}
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+        {% else %}
+            <div class="empty-notifications">
+                <div class="empty-icon">🔕</div>
+                <h3>No Notifications Yet</h3>
+                <p>When someone likes, answers, or solves your posts, they will appear here.</p>
+            </div>
+        {% endif %}
+
+        <!-- Back Button -->
+        <div class="notifications-footer">
+            <a href="/index/{{ username }}" class="profile-back-btn">
+                ⬅ Back to Home
+            </a>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
