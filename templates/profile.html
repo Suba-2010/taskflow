@@ -1,93 +1,79 @@
-<!-- profile.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ username }} | CampusHub Profile</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <title>Profile - TaskFlow</title>
+    <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
 
-<!-- Top Navbar -->
-<div class="navbar">
-    <h1>CampusHub 🌟</h1>
-</div>
-
-<!-- Profile Section -->
-<div class="profile-page">
-
-    <div class="profile-card-modern">
-
-        <!-- Cover Banner -->
-        <div class="profile-cover"></div>
-
-        <!-- Profile Content -->
-        <div class="profile-content">
-
-            <!-- Profile Image -->
-            {% if user[3] %}
-                <img
-                    src="/static/uploads/{{ user[3] }}"
-                    class="profile-large"
-                    alt="Profile Picture">
-            {% else %}
-                <div class="profile-placeholder">👤</div>
-            {% endif %}
-
-            <!-- Username -->
-            <h2 class="profile-name">{{ username }}</h2>
-
-            <p class="profile-subtitle">
-                🎓 CampusHub Member
-            </p>
-
-            <!-- Stats -->
-            <div class="profile-stats">
-
-                <div class="stat-box">
-                    <h3>{{ posts_count }}</h3>
-                    <p>Posts</p>
-                </div>
-
-                <div class="stat-box">
-                    <h3>{{ answers_count }}</h3>
-                    <p>Answers</p>
-                </div>
-
-                <div class="stat-box">
-                    <h3>{{ helpful_count }}</h3>
-                    <p>Helpful Votes</p>
-                </div>
-
-            </div>
-
-            <!-- Achievement Badges -->
-            <div class="profile-badges">
-
-                {% if posts_count >= 1 %}
-                    <span class="badge">📝 Contributor</span>
-                {% endif %}
-
-                {% if answers_count >= 1 %}
-                    <span class="badge">💡 Helper</span>
-                {% endif %}
-
-                {% if helpful_count >= 5 %}
-                    <span class="badge">🏆 Top Mentor</span>
-                {% endif %}
-
-            </div>
-
-            <!-- Back Button -->
-            <a href="/index/{{ username }}" class="profile-back-btn">
-                ⬅ Back to Home
-            </a>
-
-        </div>
+    <!-- Navbar -->
+    <div class="navbar">
+        🚀 TaskFlow
     </div>
 
-</div>
+    <div class="container">
+
+        <!-- Profile Header -->
+        <div class="card" style="text-align: center;">
+            <h1>👤 {{ username }}</h1>
+            <p>Welcome to your productivity dashboard</p>
+
+            <div class="project-actions" style="justify-content: center;">
+                <a href="/dashboard" class="btn">⬅ Back to Dashboard</a>
+                <a href="/notifications" class="btn">🔔 Notifications</a>
+                <button id="theme-toggle" class="btn" type="button">
+                    🌙 Dark Mode
+                </button>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats-grid">
+
+            <div class="stat-card">
+                <h3>{{ total_projects }}</h3>
+                <p>Total Projects</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>{{ total_tasks }}</h3>
+                <p>Assigned Tasks</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>{{ completed_tasks }}</h3>
+                <p>Completed Tasks</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>
+                    {% if total_tasks > 0 %}
+                        {{ ((completed_tasks / total_tasks) * 100) | round(0) | int }}
+                    {% else %}
+                        0
+                    {% endif %}
+                    %
+                </h3>
+                <p>Success Rate</p>
+            </div>
+
+        </div>
+
+        <!-- Motivational Section -->
+        <div class="card" style="text-align: center;">
+            <h2>🏆 Keep Going!</h2>
+            <p>
+                Track your progress, complete tasks, and collaborate
+                effectively with your team.
+            </p>
+        </div>
+
+    </div>
+
+    <!-- JavaScript -->
+    <script src="/static/script.js"></script>
 
 </body>
 </html>

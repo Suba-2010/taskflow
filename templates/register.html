@@ -1,32 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Register</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - TaskFlow</title>
+    <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-<marquee behavior="scroll" direction="left" scrollamount="10">Welcome to the Registration Page! Please create your account below.</marquee>
-<div class="login-container">
 
-    <div class="login-box">
-
-        <h2>Create Account 🚀</h2>
-
-        <form action="/register" method="POST" enctype="multipart/form-data">
-
-            <input type="text" name="username" placeholder="Username" required>
-
-            <input type="password" name="password" placeholder="Password" required>
-
-            <input type="file" name="profile_pic">
-
-            <button type="submit">Register</button>
-
-        </form>
-
+    <!-- Top Navbar -->
+    <div class="navbar">
+        🚀 TaskFlow
     </div>
 
-</div>
+    <!-- Centered Register Card -->
+    <div class="auth-container">
+        <div class="auth-box">
+            <h1>📝 Register</h1>
+            <p>Create your account and start organizing your projects.</p>
+
+            <form method="POST">
+                <input
+                    type="text"
+                    name="username"
+                    placeholder="Enter Username"
+                    required
+                >
+
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Enter Password"
+                    required
+                >
+                <select name="role" required>
+    <option value="">Select Role</option>
+    <option value="Manager">👑 Manager</option>
+    <option value="Staff">👨‍💻 Staff</option>
+</select>
+                <button type="submit">Register</button>
+            </form>
+
+            <p style="margin-top: 20px;">
+                Already have an account?
+                <a href="/login">Login</a>
+            </p>
+        </div>
+    </div>
 
 </body>
 </html>

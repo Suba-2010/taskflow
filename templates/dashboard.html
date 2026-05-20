@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow Dashboard</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        🚀 TaskFlow
+    </div>
+
+    <div class="container">
+
+        <!-- Welcome Section -->
+        <div class="card">
+            <h1>👋 Welcome {{ username }}</h1>
+
+            <p>
+                Role:
+                <span class="role-badge">
+                    {% if session['role'] == 'Manager' %}
+                        👑 Manager
+                    {% else %}
+                        👨‍💻 Staff
+                    {% endif %}
+                </span>
+            </p>
+
+            <div class="project-actions">
+                <a href="/profile" class="btn">👤 Profile</a>
+                <a href="/notifications" class="btn">🔔 Notifications</a>
+                <button id="theme-toggle" class="btn" type="button">
+                    🌙 Dark Mode
+                </button>
+                <a href="/logout" class="delete-btn">🚪 Logout</a>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+<div class="stats-grid">
+    <!-- Total Projects -->
+    <div class="stat-card">
+        <h3>{{ projects|length }}</h3>
+        <p>Total Projects</p>
+    </div>
+
+    <!-- Total Tasks -->
+    <div class="stat-card">
+        <h3>{{ total_tasks }}</h3>
+        <p>Total Tasks</p>
+    </div>
+
+    <!-- Completed Tasks -->
+    <div class="stat-card">
+        <h3>{{ completed_tasks }}</h3>
+        <p>Completed Tasks</p>
+    </div>
+
+    <!-- Team Members -->
+    <div class="stat-card">
+        <h3>{{ total_members }}</h3>
+        <p>Team Members</p>
+    </div>
+</div>
+
+        <!-- Pending Invitations -->
+        {% if invitations %}
+        <div class="card">
+            <h2>🔔 Pending Invitations</h2>
+
+            {% for invitation in invitations %}
+                <div class="card" style="margin-top: 20px;">
+                    <h3>{{ invitation[1] }}</h3>
+
+                    <p>
+                        Invited by <strong>{{ invitation[2] }}</strong>
+                    </p>
+
+                    <div class="project-actions">
+                        <a href="/accept_invitation/{{ invitation[0] }}"
+                           class="btn">
+                            ✅ Accept
+                        </a>
+
+                        <a href="/reject_invitation/{{ invitation[0] }}"
+                           class="delete-btn">
+                            ❌ Reject
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Create Project (Only Managers) -->
+        {% if session['role'] == 'Manager' %}
+        <div class="card">
+            <h2>📁 Create New Project</h2>
+
+            <form action="/create_project" method="POST">
+                <input type="text"
+                       name="name"
+                       placeholder="Project Name"
+                       required>
+
+                <textarea name="description"
+                          placeholder="Project Description"></textarea>
+
+                <button type="submit">➕ Create Project</button>
+            </form>
+        </div>
+        {% endif %}
+
+        <!-- My Projects -->
+        <div class="card">
+            <h2>📋 My Projects</h2>
+
+            {% if projects %}
+                {% for project in projects %}
+                    <div class="card" style="margin-top: 20px;">
+                        <h3>{{ project[1] }}</h3>
+                        <p>{{ project[2] }}</p>
+
+                        <!-- Invite Team Member (Only Managers) -->
+                        {% if session['role'] == 'Manager' %}
+                        <form action="/invite_member/{{ project[0] }}"
+                              method="POST"
+                              style="margin-top: 20px;">
+
+                            <input type="text"
+                                   name="invited_user"
+                                   placeholder="Enter username to invite"
+                                   required>
+
+                            <button type="submit">
+                                📧 Invite Member
+                            </button>
+                        </form>
+                        {% endif %}
+
+                        <!-- Project Actions -->
+                        <div class="project-actions">
+                            <a href="/project/{{ project[0] }}" class="btn">
+                                📂 Open Project
+                            </a>
+
+                            <a href="/project/{{ project[0] }}" class="btn">
+                                📝 Assign Tasks
+                            </a>
+
+                            <!-- Delete Project (Only Managers) -->
+                            {% if session['role'] == 'Manager' %}
+                            <a href="/delete_project/{{ project[0] }}"
+                               class="delete-btn"
+                               onclick="return confirm('Delete this project?')">
+                                🗑 Delete
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No projects available yet.</p>
+            {% endif %}
+        </div>
+
+    </div>
+
+    <!-- JavaScript -->
+    <script src="/static/script.js"></script>
+
+</body>
+</html>

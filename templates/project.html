@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ project[1] }} - TaskFlow</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <script src="/static/script.js"></script>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        🚀 TaskFlow
+    </div>
+
+    <div class="container">
+
+        <!-- Project Header -->
+        <div class="card">
+            <h1>📁 {{ project[1] }}</h1>
+            <p>{{ project[2] }}</p>
+
+            <div class="project-actions">
+                <a href="/dashboard" class="btn">⬅ Back to Dashboard</a>
+                <a href="/logout" class="delete-btn">🚪 Logout</a>
+                <button id="theme-toggle" class="btn" type="button">🌙 Dark Mode</button>
+            </div>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="card">
+            <h2>📊 Project Progress</h2>
+
+            <p>
+                <strong>{{ completed_tasks }}</strong> of
+                <strong>{{ total_tasks }}</strong> tasks completed
+                ({{ progress }}%)
+            </p>
+<div style="background:#e5e7eb; border-radius:10px; height:24px; overflow:hidden; margin-top:10px;">
+    <div class="progress-bar" data-width="{{ progress }}">
+        {{ progress }}%
+    </div>
+</div>
+        </div>
+
+        <!-- Create Task (Only Manager Can See) -->
+{% if session['role'] == 'Manager' %}
+<div class="card">
+    <h2>📝 Create New Task</h2>
+
+    <form action="/create_task/{{ project[0] }}" method="POST">
+
+        <input type="text"
+               name="title"
+               placeholder="Task Title"
+               required>
+
+        <textarea name="description"
+                  placeholder="Task Description"></textarea>
+
+        <!-- Assign Team Member -->
+        <select name="assigned_to" required>
+            <option value="">👤 Select Team Member</option>
+
+            <!-- Manager -->
+            <option value="{{ username }}">
+                {{ username }} (Manager)
+            </option>
+
+            <!-- Accepted Members -->
+            {% for member in members %}
+                <option value="{{ member[0] }}">
+                    {{ member[0] }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <!-- Task Status -->
+        <select name="status">
+            <option value="To Do">📝 To Do</option>
+            <option value="In Progress">🚀 In Progress</option>
+            <option value="Done">✅ Done</option>
+        </select>
+
+        <button type="submit">➕ Create Task</button>
+    </form>
+</div>
+{% endif %}
+        <!-- Task List -->
+<div class="card">
+    <h2>📋 Tasks</h2>
+
+    {% if tasks %}
+        {% for task in tasks %}
+            <div class="card" style="margin-top: 20px;">
+
+                <h3>{{ task[2] }}</h3>
+                <p>{{ task[3] }}</p>
+
+                <p><strong>👤 Assigned To:</strong> {{ task[4] }}</p>
+                <p><strong>📌 Status:</strong> {{ task[5] }}</p>
+
+                <!-- Edit Task -->
+                <details style="margin-top:15px;">
+                    <summary style="cursor:pointer; font-weight:600;">
+                        ✏️ Edit Task
+                    </summary>
+
+                    <form action="/edit_task/{{ task[0] }}/{{ project[0] }}"
+                          method="POST"
+                          style="margin-top:15px;">
+
+                        <input type="text"
+                               name="title"
+                               value="{{ task[2] }}"
+                               required>
+
+                        <textarea name="description">{{ task[3] }}</textarea>
+
+                        <input type="text"
+                               name="assigned_to"
+                               value="{{ task[4] }}">
+
+                        <select name="status">
+                            <option value="To Do"
+                                {% if task[5] == 'To Do' %}selected{% endif %}>
+                                📝 To Do
+                            </option>
+
+                            <option value="In Progress"
+                                {% if task[5] == 'In Progress' %}selected{% endif %}>
+                                🚀 In Progress
+                            </option>
+
+                            <option value="Done"
+                                {% if task[5] == 'Done' %}selected{% endif %}>
+                                ✅ Done
+                            </option>
+                        </select>
+
+                        <button type="submit">💾 Update Task</button>
+                    </form>
+                </details>
+
+                <!-- Delete Button -->
+                <div class="project-actions" style="margin-top:15px;">
+                    <a href="/delete_task/{{ task[0] }}/{{ project[0] }}"
+                       class="delete-btn"
+                       onclick="return confirm('Delete this task?')">
+                        🗑️ Delete Task
+                    </a>
+                </div>
+
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No tasks created yet.</p>
+    {% endif %}
+</div>
+
+<!-- =========================
+     CLEAN TEAM CHAT WITH REACTIONS
+     - Compact emoji buttons
+     - Click reaction on each message
+     - No huge buttons
+========================= -->
+<div class="card">
+    <h2>💬 Team Chat</h2>
+
+    <!-- Send Message Form -->
+    <form action="/send_message/{{ project[0] }}" method="POST">
+        <textarea
+            id="chat-box"
+            name="message"
+            placeholder="Type your message here..."
+            required></textarea>
+
+        <!-- Compact Emoji Picker -->
+        <div style="margin: 10px 0;">
+            <strong>😀 Emojis:</strong><br><br>
+
+            <span onclick="addEmoji('😀')" style="cursor:pointer; font-size:24px; margin-right:10px;">😀</span>
+            <span onclick="addEmoji('😂')" style="cursor:pointer; font-size:24px; margin-right:10px;">😂</span>
+            <span onclick="addEmoji('😍')" style="cursor:pointer; font-size:24px; margin-right:10px;">😍</span>
+            <span onclick="addEmoji('👍')" style="cursor:pointer; font-size:24px; margin-right:10px;">👍</span>
+            <span onclick="addEmoji('🔥')" style="cursor:pointer; font-size:24px; margin-right:10px;">🔥</span>
+            <span onclick="addEmoji('🎉')" style="cursor:pointer; font-size:24px; margin-right:10px;">🎉</span>
+            <span onclick="addEmoji('❤️')" style="cursor:pointer; font-size:24px; margin-right:10px;">❤️</span>
+            <span onclick="addEmoji('🚀')" style="cursor:pointer; font-size:24px; margin-right:10px;">🚀</span>
+            <span onclick="addEmoji('🙏')" style="cursor:pointer; font-size:24px; margin-right:10px;">🙏</span>
+            <span onclick="addEmoji('💯')" style="cursor:pointer; font-size:24px; margin-right:10px;">💯</span>
+        </div>
+
+        <button type="submit">📨 Send Message</button>
+    </form>
+
+    <br>
+
+    <!-- Messages -->
+    <div id="chat-messages" style="max-height: 500px; overflow-y: auto;">
+        {% if messages %}
+            {% for msg in messages %}
+                <!-- Message Card -->
+<div class="card" style="margin-top: 15px;">
+    <h4>👤 {{ msg[1] }}</h4>
+    <p>{{ msg[2] }}</p>
+    <small>🕒 {{ msg[3] }}</small>
+
+    <!-- Reaction Buttons -->
+    <div style="margin-top: 10px; font-size: 22px;">
+        <span onclick="react(this)" style="cursor:pointer; margin-right:8px;">👍</span>
+        <span onclick="react(this)" style="cursor:pointer; margin-right:8px;">❤️</span>
+        <span onclick="react(this)" style="cursor:pointer; margin-right:8px;">😂</span>
+        <span onclick="react(this)" style="cursor:pointer; margin-right:8px;">🔥</span>
+        <span onclick="react(this)" style="cursor:pointer; margin-right:8px;">🎉</span>
+        <span onclick="react(this)" style="cursor:pointer; margin-right:8px;">🚀</span>
+    </div>
+
+    <div class="reaction-display"
+         style="margin-top: 8px; font-size: 24px;"></div>
+
+    <!-- Delete Button -->
+    {% if msg[1] == session['username'] %}
+        <div class="project-actions" style="margin-top: 12px;">
+            <a href="/delete_message/{{ msg[0] }}/{{ project[0] }}"
+               class="delete-btn"
+               onclick="return confirm('Delete this message?')">
+                🗑️ Delete Message
+            </a>
+        </div>
+    {% endif %}
+</div>
+            {% endfor %}
+        {% else %}
+            <p>No messages yet. Start the conversation!</p>
+        {% endif %}
+</div>
+
+<script>
+function addEmoji(emoji) {
+    const chatBox = document.getElementById("chat-box");
+    chatBox.value += emoji;
+    chatBox.focus();
+}
+
+function react(element) {
+    const emoji = element.textContent;
+    const display = element.parentElement.nextElementSibling;
+    display.innerHTML += emoji + " ";
+}
+
+// Auto-scroll to latest message
+window.onload = function() {
+    const chatMessages = document.getElementById("chat-messages");
+    if (chatMessages) {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+};
+</script>
+    </div>
+
+</body>
+</html>

@@ -1,28 +1,48 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Login - CampusHub</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - TaskFlow</title>
+    <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-<marquee behavior="scroll" direction="left" class="marquee">Welcome to CampusHub - Your Campus, Your Community! 🌟</marquee>
-<div class="login-container">
-    <div class="login-box">
-        <h2>CampusHub 🚀</h2>
-        <p class="subtitle">Connect. Share. Learn.</p>
 
-        <form action="/login" method="POST">
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="password" name="password" placeholder="Password" required>
-
-            <button>Login</button>
-        </form>
-
-        <p class="register-text">
-            Don't have an account? <a href="/register">Register</a>
-        </p>
+    <!-- Top Navbar -->
+    <div class="navbar">
+        🚀 TaskFlow
     </div>
-</div>
+
+    <!-- Centered Login Card -->
+    <div class="auth-container">
+        <div class="auth-box">
+            <h1>🔐 Login</h1>
+            <p>Welcome back! Sign in to continue managing your projects.</p>
+
+            <form method="POST">
+                <input
+                    type="text"
+                    name="username"
+                    placeholder="Enter Username"
+                    required
+                >
+
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Enter Password"
+                    required
+                >
+
+                <button type="submit">Login</button>
+            </form>
+
+            <p style="margin-top: 20px;">
+                Don't have an account?
+                <a href="/register">Register</a>
+            </p>
+        </div>
+    </div>
 
 </body>
 </html>
