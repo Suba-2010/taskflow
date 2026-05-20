@@ -106,27 +106,29 @@ taskflow/
     ├── profile.png
     └── notifications.png
 
+---
+
 ## 📸 Screenshots
 
 ### 🔐 Login Page
 
-![Login Page](shot/login.png)
+![Login Page](shots/login.png)
 
 ### 📊 Dashboard
 
-![Dashboard](shot/dashboard.png)
+![Dashboard](shots/dashboard.png)
 
 ### 📁 Project Page
 
-![Project Page](shot/project.png)
+![Project Page](shots/project.png)
 
 ### 👤 Profile Page
 
-![Profile Page](shot/profile.png)
+![Profile Page](shots/profile.png)
 
 ### 🔔 Notifications Page
 
-![Notifications Page](shot/notifications.png)
+![Notifications Page](shots/notify.png)
 
 ---
 
